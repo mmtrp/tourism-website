@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="LankaGenie — Your AI travel companion for Sri Lanka. Smart itineraries, fair prices, scam protection, and local secrets. Everything a foreigner needs to explore Sri Lanka confidently.">
+<title>LankaGenie — Your AI Travel Companion for Sri Lanka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+<style>
+/* ─── RESET & VARIABLES ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --jungle: #0B3D2E;
+  --jungle-mid: #145C44;
+  --jade: #1A7A57;
+  --emerald: #22A06B;
+  --mint: #D4EDE4;
+  --gold: #C8902A;
+  --gold-light: #F5D98B;
+  --sand: #FDF6E9;
+  --cream: #FFFDF8;
+  --coral: #D95F3B;
+  --sky: #2E7FBF;
+  --text-dark: #1A1A18;
+  --text-mid: #3D4038;
+  --text-muted: #7A7D74;
+  --text-light: #B0B3A8;
+  --white: #FFFFFF;
+  --border: rgba(11,61,46,0.12);
+  --border-gold: rgba(200,144,42,0.3);
+  --shadow-sm: 0 2px 12px rgba(11,61,46,0.08);
+  --shadow-md: 0 8px 32px rgba(11,61,46,0.12);
+  --shadow-lg: 0 20px 60px rgba(11,61,46,0.18);
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--text-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ─── UTILITY ─── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+.container-narrow { max-width: 840px; margin: 0 auto; padding: 0 24px; }
+.text-center { text-align: center; }
+.hidden { display: none; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-up  { animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.55s; }
+.delay-6 { animation-delay: 0.7s; }
+
+/* scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal.delay-r1 { transition-delay: 0.05s; }
+.reveal.delay-r2 { transition-delay: 0.15s; }
+.reveal.delay-r3 { transition-delay: 0.25s; }
+.reveal.delay-r4 { transition-delay: 0.35s; }
+.reveal.delay-r5 { transition-delay: 0.45s; }
+.reveal.delay-r6 { transition-delay: 0.55s; }
+.reveal.delay-r7 { transition-delay: 0.65s; }
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 24px;
+  transition: background 0.3s, box-shadow 0.3s, padding 0.3s;
+}
+.nav.scrolled {
+  background: rgba(255,253,248,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 var(--border), var(--shadow-sm);
+  padding: 0 24px;
+}
+.nav-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.nav-logo-mark {
+  width: 36px; height: 36px;
+  background: var(--jungle);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700; color: var(--gold-light);
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.nav-logo:hover .nav-logo-mark { transform: rotate(-5deg) scale(1.05); }
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: 19px; font-weight: 700;
+  color: var(--jungle);
+  letter-spacing: -0.3px;
+}
+.nav-logo-sub {
+  font-size: 10px; font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  display: none;
+}
+.nav.scrolled .nav-logo-text { color: var(--jungle); }
+.nav-links {
+  display: flex; align-items: center; gap: 6px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13.5px; font-weight: 400;
+  color: var(--text-mid);
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links a:hover { color: var(--jungle); background: var(--mint); }
+.nav-cta {
+  display: flex; align-items: center; gap: 10px;
+}
+.btn-nav {
+  font-size: 13px; font-weight: 500;
+  padding: 9px 20px;
+  border-radius: var(--r-pill);
+  background: var(--jungle);
+  color: var(--white);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+.btn-nav:hover {
+  background: var(--jungle-mid);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(11,61,46,0.25);
+}
+.nav-mobile-btn {
+  display: none;
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  border-radius: var(--r-sm);
+  background: var(--mint);
+  cursor: pointer;
+}
+.nav-mobile-btn span {
+  display: block; width: 18px; height: 1.5px;
+  background: var(--jungle);
+  position: relative;
+  transition: 0.2s;
+}
+.nav-mobile-btn span::before,
+.nav-mobile-btn span::after {
+  content: ''; position: absolute;
+  width: 100%; height: 100%;
+  background: var(--jungle);
+  transition: 0.2s;
+}
+.nav-mobile-btn span::before { top: -5px; }
+.nav-mobile-btn span::after  { top: 5px; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  padding: 120px 24px 80px;
+  display: flex; align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--jungle);
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 65% 40%, rgba(26,122,87,0.4) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 80% at 20% 80%, rgba(200,144,42,0.15) 0%, transparent 60%),
+    var(--jungle);
+}
+.hero-pattern {
+  position: absolute; inset: 0;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
+  background-size: 32px 32px;
+  opacity: 0.6;
+}
+/* Decorative leaf shapes */
+.hero-deco {
+  position: absolute; pointer-events: none;
+}
+.hero-deco-1 {
+  top: -80px; right: -60px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,122,87,0.3) 0%, transparent 70%);
+}
+.hero-deco-2 {
+  bottom: -100px; left: -80px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,144,42,0.12) 0%, transparent 70%);
+}
+.hero-island {
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 46%;
+  max-width: 560px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  animation: float 7s ease-in-out infinite;
+}
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 600px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(200,144,42,0.18);
+  border: 1px solid rgba(200,144,42,0.35);
+  border-radius: var(--r-pill);
+  padding: 6px 14px;
+  font-size: 12px; font-weight: 500;
+  color: var(--gold-light);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--white);
+  letter-spacing: -1px;
+  margin-bottom: 22px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+.hero-sub {
+  font-size: 17px; font-weight: 300;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.65;
+  margin-bottom: 40px;
+  max-width: 480px;
+}
+.hero-actions {
+  display: flex; align-items: center;
+  flex-wrap: wrap; gap: 14px;
+  margin-bottom: 52px;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold);
+  color: var(--white);
+  font-size: 15px; font-weight: 500;
+  padding: 14px 28px;
+  border-radius: var(--r-pill);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(200,144,42,0.4);
+  white-space: nowrap;
+}
+.btn-primary:hover {
+  background: #B07820;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(200,144,42,0.45);
+}
+.btn-primary svg { flex-shrink: 0; }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.88);
+  font-size: 15px; font-weight: 400;
+  padding: 14px 24px;
+  border-radius: var(--r-pill);
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.16); transform: translateY(-1px); }
+.hero-stats {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+.hero-stat {}
+.hero-stat-n {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-stat-l {
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  font-weight: 300; letter-spacing: 0.02em;
+}
+/* SVG Island illustration */
+.island-svg { width: 100%; height: auto; }
+
+/* ─── TOOLS SECTION ─── */
+.tools-section {
+  padding: 100px 0;
+  background: var(--cream);
+}
+.section-label {
+  display: inline-block;
+  font-size: 11px; font-weight: 500;
+  color: var(--jade);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--mint);
+  padding: 5px 14px;
+  border-radius: var(--r-pill);
+  margin-bottom: 18px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--text-dark);
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 16px; font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 560px;
+}
+.section-sub.centered { margin: 0 auto; }
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 60px;
+}
+.tool-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 32px 28px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s, border-color 0.25s;
+}
+.tool-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--mint) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tool-card:hover { 
+  transform: translateY(-6px); 
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(26,122,87,0.2);
+}
+.tool-card:hover::before { opacity: 1; }
+.tool-card.featured {
+  background: var(--jungle);
+  border-color: transparent;
+  grid-column: span 1;
+}
+.tool-card.featured::before {
+  background: linear-gradient(135deg, rgba(26,122,87,0.5) 0%, transparent 60%);
+}
+.tool-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 22px;
+  font-size: 22px;
+  position: relative; z-index: 1;
+  flex-shrink: 0;
+}
+.tool-num {
+  position: absolute;
+  top: 20px; right: 22px;
+  font-size: 11px; font-weight: 500;
+  color: var(--text-light);
+  font-variant-numeric: tabular-nums;
+  z-index: 1;
+}
+.tool-card.featured .tool-num { color: rgba(255,255,255,0.3); }
+.tool-card-title {
+  font-family: var(--font-display);
+  font-size: 19px; font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.3;
+  margin-bottom: 10px;
+  position: relative; z-index: 1;
+}
+.tool-card.featured .tool-card-title { color: var(--white); }
+.tool-card-desc {
+  font-size: 14px; font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.65;
+  position: relative; z-index: 1;
+}
+.tool-card.featured .tool-card-desc { color: rgba(255,255,255,0.62); }
+.tool-card-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 20px;
+  font-size: 13px; font-weight: 500;
+  color: var(--jade);
+  position: relative; z-index: 1;
+  transition: gap 0.2s;
+}
+.tool-card:hover .tool-card-link { gap: 10px; }
+.tool-card.featured .tool-card-link { color: var(--gold-light); }
+.tool-card-arrow {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.tool-card:hover .tool-card-arrow { transform: translateX(3px); }
+
+/* ─── HOW IT WORKS ─── */
+.how-section {
+  padding: 100px 0;
+  background: var(--sand);
+  position: relative;
+  overflow: hidden;
+}
+.how-bg-deco {
+  position: absolute;
+  right: -120px; top: -80px;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,122,87,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 60px;
+}
+.how-step {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 28px 22px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.how-step:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.how-step-num {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--jungle);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+}
+.how-step-icon {
+  font-size: 28px; margin-bottom: 14px;
+}
+.how-step-title {
+  font-family: var(--font-display);
+  font-size: 17px; font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.how-step-desc {
+  font-size: 13px; font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.how-connector {
+  position: absolute; top: 50%; right: -20px;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 18px;
+  z-index: 2;
+}
+
+/* ─── TRUST STRIP ─── */
+.trust-section {
+  padding: 60px 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.trust-inner {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 32px;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 14px;
+  flex: 1; min-width: 180px;
+}
+.trust-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--r-md);
+  background: var(--mint);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.trust-title {
+  font-size: 14px; font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+.trust-sub {
+  font-size: 12px; font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.trust-divider {
+  width: 1px; height: 48px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ─── QUICK ANSWER ─── */
+.qa-section {
+  padding: 100px 0;
+  background: var(--cream);
+}
+.qa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+  margin-top: 60px;
+}
+.qa-left {}
+.qa-items { display: flex; flex-direction: column; gap: 12px; }
+.qa-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.qa-item:hover { border-color: rgba(26,122,87,0.25); }
+.qa-item.open { border-color: rgba(26,122,87,0.35); box-shadow: var(--shadow-sm); }
+.qa-q {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px;
+  gap: 12px;
+}
+.qa-q-text {
+  font-size: 14px; font-weight: 500;
+  color: var(--text-dark);
+  line-height: 1.45;
+}
+.qa-toggle {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--mint);
+  color: var(--jade);
+  font-size: 18px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.25s, background 0.2s;
+  font-weight: 300;
+}
+.qa-item.open .qa-toggle { transform: rotate(45deg); background: var(--jungle); color: var(--white); }
+.qa-a {
+  display: none;
+  padding: 0 22px 18px;
+  font-size: 13.5px; font-weight: 300;
+  color: var(--text-mid);
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.qa-item.open .qa-a { display: block; }
+.qa-right {}
+.qa-promo {
+  background: var(--jungle);
+  border-radius: var(--r-xl);
+  padding: 36px;
+  color: var(--white);
+  position: sticky; top: 90px;
+}
+.qa-promo-label {
+  font-size: 11px; font-weight: 500;
+  color: var(--gold-light);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.qa-promo h3 {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 700;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+.qa-promo p {
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.qa-form { display: flex; flex-direction: column; gap: 10px; }
+.qa-input {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 14px; font-weight: 300;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+.qa-input::placeholder { color: rgba(255,255,255,0.4); }
+.qa-input:focus { border-color: rgba(200,144,42,0.6); background: rgba(255,255,255,0.14); }
+.qa-form-note {
+  font-size: 11.5px; font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+}
+.btn-gold {
+  background: var(--gold);
+  color: var(--white);
+  font-size: 14px; font-weight: 500;
+  padding: 13px 24px;
+  border-radius: var(--r-pill);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  text-align: center;
+}
+.btn-gold:hover {
+  background: #B07820;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(200,144,42,0.35);
+}
+
+/* ─── DESTINATIONS TEASER ─── */
+.destinations-section {
+  padding: 100px 0;
+  background: var(--sand);
+}
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 52px;
+}
+.dest-card {
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+  background: var(--jungle-mid);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.dest-card:hover { transform: scale(1.03); }
+.dest-card:first-child { grid-row: span 2; aspect-ratio: unset; }
+.dest-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+.dest-card:hover .dest-bg { transform: scale(1.06); }
+.dest-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(11,61,46,0.85) 0%, rgba(11,61,46,0.1) 55%, transparent 100%);
+}
+.dest-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 20px 20px;
+  color: var(--white);
+}
+.dest-name {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 600;
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+.dest-card:first-child .dest-name { font-size: 26px; }
+.dest-tag {
+  display: inline-block;
+  font-size: 11px; font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.12);
+  border-radius: var(--r-pill);
+  padding: 3px 10px;
+}
+/* Destination color fills (SVG-style flat backgrounds) */
+.dest-1 .dest-bg { background: linear-gradient(135deg, #1A5C40 0%, #0D3D28 100%); }
+.dest-2 .dest-bg { background: linear-gradient(135deg, #2E5F7A 0%, #1A3D52 100%); }
+.dest-3 .dest-bg { background: linear-gradient(135deg, #5C3D1A 0%, #3D2810 100%); }
+.dest-4 .dest-bg { background: linear-gradient(135deg, #1A4A5C 0%, #0D2F3D 100%); }
+.dest-5 .dest-bg { background: linear-gradient(135deg, #3D5C1A 0%, #263D10 100%); }
+/* Decorative SVG inside each dest card */
+.dest-illustration {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.18;
+  width: 60%;
+}
+
+/* ─── ITINERARY PREVIEW ─── */
+.itinerary-section {
+  padding: 100px 0;
+  background: var(--cream);
+}
+.itinerary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-top: 60px;
+}
+.itinerary-preview {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.itin-header {
+  background: var(--jungle);
+  padding: 20px 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.itin-header-title {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 600;
+  color: var(--white);
+}
+.itin-header-sub {
+  font-size: 12px; font-weight: 300;
+  color: rgba(255,255,255,0.6);
+}
+.itin-dots { display: flex; gap: 5px; margin-left: auto; }
+.itin-dot { width: 8px; height: 8px; border-radius: 50%; }
+.itin-days {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.itin-day-tab {
+  padding: 12px 18px;
+  font-size: 12px; font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.itin-day-tab.active { color: var(--jade); border-bottom-color: var(--jade); }
+.itin-body { padding: 20px 24px; }
+.itin-day-title {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 16px;
+}
+.itin-items { display: flex; flex-direction: column; gap: 12px; }
+.itin-item {
+  display: flex; gap: 14px;
+  align-items: flex-start;
+}
+.itin-time {
+  font-size: 11px; font-weight: 500;
+  color: var(--jade);
+  background: var(--mint);
+  padding: 3px 8px; border-radius: var(--r-pill);
+  white-space: nowrap;
+  margin-top: 1px;
+  min-width: 62px; text-align: center;
+}
+.itin-act-title {
+  font-size: 13.5px; font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 2px;
+}
+.itin-act-desc {
+  font-size: 12px; font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.itin-footer {
+  border-top: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.itin-footer-note {
+  font-size: 11px; font-weight: 300;
+  color: var(--text-muted);
+}
+.itin-footer-tag {
+  font-size: 11px; font-weight: 500;
+  color: var(--jade);
+  background: var(--mint);
+  padding: 4px 10px; border-radius: var(--r-pill);
+}
+.itinerary-text h3 {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  margin-bottom: 18px;
+}
+.itinerary-text p {
+  font-size: 15px; font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+.itinerary-features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+.itin-feature {
+  display: flex; align-items: center; gap: 12px;
+}
+.itin-feature-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: var(--r-sm);
+  background: var(--mint);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.itin-feature-text {
+  font-size: 14px; color: var(--text-dark);
+  font-weight: 400;
+}
+
+/* ─── CTA BANNER ─── */
+.cta-section {
+  padding: 80px 0;
+  background: var(--jungle);
+  position: relative; overflow: hidden;
+}
+.cta-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 100% at 80% 50%, rgba(26,122,87,0.4) 0%, transparent 70%);
+}
+.cta-pattern {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+.cta-inner {
+  position: relative; z-index: 2;
+  text-align: center; max-width: 680px; margin: 0 auto;
+}
+.cta-inner h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700; color: var(--white);
+  line-height: 1.2; letter-spacing: -0.5px;
+  margin-bottom: 18px;
+}
+.cta-inner h2 em { color: var(--gold-light); font-style: italic; }
+.cta-inner p {
+  font-size: 16px; font-weight: 300;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.65; margin-bottom: 36px;
+}
+.cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.cta-form-row {
+  display: flex; gap: 10px; max-width: 440px; margin: 0 auto 10px;
+}
+.cta-input {
+  flex: 1;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: var(--r-pill);
+  padding: 14px 20px;
+  font-family: inherit; font-size: 14px; font-weight: 300;
+  color: var(--white); outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.cta-input::placeholder { color: rgba(255,255,255,0.4); }
+.cta-input:focus { border-color: rgba(200,144,42,0.6); background: rgba(255,255,255,0.16); }
+.cta-note {
+  font-size: 12px; font-weight: 300;
+  color: rgba(255,255,255,0.38);
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--text-dark);
+  color: rgba(255,255,255,0.7);
+  padding: 60px 0 32px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+.footer-brand {}
+.footer-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.footer-logo-mark {
+  width: 32px; height: 32px;
+  background: var(--jade);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 700; color: var(--gold-light);
+}
+.footer-logo-text {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 700;
+  color: var(--white);
+}
+.footer-desc {
+  font-size: 13px; font-weight: 300;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 20px;
+  max-width: 280px;
+}
+.footer-social { display: flex; gap: 8px; }
+.footer-social-link {
+  width: 34px; height: 34px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: rgba(255,255,255,0.6);
+  transition: background 0.2s, color 0.2s;
+}
+.footer-social-link:hover { background: rgba(255,255,255,0.15); color: var(--white); }
+.footer-col-title {
+  font-size: 12px; font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.footer-links { display: flex; flex-direction: column; gap: 8px; }
+.footer-links a {
+  font-size: 13px; font-weight: 300;
+  color: rgba(255,255,255,0.5);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: rgba(255,255,255,0.85); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 12px;
+}
+.footer-bottom-text {
+  font-size: 12px; font-weight: 300;
+  color: rgba(255,255,255,0.3);
+}
+.footer-bottom-links {
+  display: flex; gap: 20px;
+}
+.footer-bottom-links a {
+  font-size: 12px; font-weight: 300;
+  color: rgba(255,255,255,0.35);
+  transition: color 0.2s;
+}
+.footer-bottom-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ─── MOBILE NAV ─── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 68px; left: 0; right: 0;
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  z-index: 99;
+  padding: 16px 24px;
+}
+.mobile-menu.open { display: block; }
+.mobile-links { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+.mobile-links a {
+  display: block;
+  font-size: 15px; font-weight: 400;
+  color: var(--text-dark);
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  transition: background 0.15s;
+}
+.mobile-links a:hover { background: var(--mint); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .tools-grid { grid-template-columns: repeat(2, 1fr); }
+  .how-steps { grid-template-columns: repeat(2, 1fr); }
+  .dest-grid { grid-template-columns: repeat(2, 1fr); }
+  .dest-card:first-child { grid-row: auto; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media (max-width: 768px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-mobile-btn { display: flex; }
+  .hero { padding: 100px 24px 60px; }
+  .hero-island { display: none; }
+  .hero h1 { font-size: 38px; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: 1fr 1fr; }
+  .dest-grid { grid-template-columns: 1fr 1fr; }
+  .itinerary-grid { grid-template-columns: 1fr; }
+  .qa-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .trust-divider { display: none; }
+  .trust-inner { flex-direction: column; gap: 20px; }
+  .hero-stats { gap: 20px; }
+}
+@media (max-width: 480px) {
+  .how-steps { grid-template-columns: 1fr; }
+  .dest-grid { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn-primary, .btn-secondary { justify-content: center; }
+  .cta-form-row { flex-direction: column; }
+  .hero-stat-n { font-size: 22px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">LG</div>
+      <span class="nav-logo-text">LankaGenie</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#tools">AI Tools</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#destinations">Destinations</a></li>
+      <li><a href="#itinerary">Plan Trip</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#itinerary" class="btn-nav">Plan My Trip →</a>
+    </div>
+    <button class="nav-mobile-btn" id="mobileMenuBtn" aria-label="Menu">
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul class="mobile-links">
+    <li><a href="#tools">AI Tools</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#itinerary">Plan Trip</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a href="#itinerary" class="btn-nav" style="display:block;text-align:center;padding:12px 24px;border-radius:var(--r-pill)">Plan My Trip →</a>
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-deco hero-deco-1"></div>
+  <div class="hero-deco hero-deco-2"></div>
+
+  <!-- Decorative Sri Lanka Island SVG -->
+  <div class="hero-island">
+    <svg class="island-svg" viewBox="0 0 500 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Sri Lanka island silhouette (simplified) -->
+      <ellipse cx="250" cy="300" rx="130" ry="180" fill="rgba(26,122,87,0.15)" />
+      <path d="M250,130 C310,135 360,170 380,220 C400,265 390,320 370,360 C345,408 305,440 265,460 C240,472 220,472 200,465 C170,452 140,430 125,395 C108,358 112,315 125,275 C142,225 185,165 250,130 Z" fill="rgba(26,122,87,0.25)" />
+      <path d="M250,150 C305,155 348,188 366,235 C382,278 374,330 354,368 C332,410 295,440 262,456 C242,466 224,465 206,458 C178,446 152,425 138,393 C122,357 126,315 138,276 C154,228 194,168 250,150 Z" fill="rgba(26,122,87,0.2)" stroke="rgba(26,122,87,0.4)" stroke-width="1"/>
+      <!-- Mountains -->
+      <path d="M220,280 L250,230 L280,280 Z" fill="rgba(200,144,42,0.3)" />
+      <path d="M200,295 L225,252 L250,295 Z" fill="rgba(200,144,42,0.2)" />
+      <!-- Trees -->
+      <circle cx="190" cy="350" r="14" fill="rgba(26,122,87,0.5)" />
+      <circle cx="310" cy="330" r="12" fill="rgba(26,122,87,0.4)" />
+      <circle cx="255" cy="380" r="10" fill="rgba(26,122,87,0.45)" />
+      <circle cx="175" cy="320" r="9" fill="rgba(26,122,87,0.35)" />
+      <!-- Water dots around island -->
+      <circle cx="130" cy="240" r="3" fill="rgba(255,255,255,0.12)" />
+      <circle cx="380" cy="280" r="2.5" fill="rgba(255,255,255,0.1)" />
+      <circle cx="360" cy="420" r="2" fill="rgba(255,255,255,0.1)" />
+      <circle cx="148" cy="390" r="3" fill="rgba(255,255,255,0.12)" />
+      <!-- Compass rose -->
+      <g transform="translate(410,140)">
+        <circle cx="0" cy="0" r="24" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <path d="M0,-16 L4,-6 L0,-8 L-4,-6 Z" fill="rgba(200,144,42,0.7)"/>
+        <path d="M0,16 L4,6 L0,8 L-4,6 Z" fill="rgba(255,255,255,0.3)"/>
+        <path d="M-16,0 L-6,-4 L-8,0 L-6,4 Z" fill="rgba(255,255,255,0.3)"/>
+        <path d="M16,0 L6,-4 L8,0 L6,4 Z" fill="rgba(255,255,255,0.3)"/>
+        <text x="0" y="-20" text-anchor="middle" font-size="8" fill="rgba(200,144,42,0.8)" font-family="DM Sans, sans-serif" font-weight="500">N</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge animate-fade-up">
+        <span class="hero-badge-dot"></span>
+        Sri Lanka's First AI Travel Companion
+      </div>
+      <h1 class="animate-fade-up delay-1">
+        Explore Sri Lanka<br>like a <em>local expert</em>
+      </h1>
+      <p class="hero-sub animate-fade-up delay-2">
+        Your intelligent guide to Sri Lanka — personalized itineraries, honest prices, scam protection, cultural guidance, and hidden gems. Everything a foreigner needs, powered by AI.
+      </p>
+      <div class="hero-actions animate-fade-up delay-3">
+        <a href="#itinerary" class="btn-primary">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M8 6H21M8 12H21M8 18H21M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Build My Itinerary
+        </a>
+        <a href="#tools" class="btn-secondary">
+          Explore All Tools →
+        </a>
+      </div>
+      <div class="hero-stats animate-fade-up delay-4">
+        <div class="hero-stat">
+          <div class="hero-stat-n">604K+</div>
+          <div class="hero-stat-l">Tourists in 2026</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-n">7</div>
+          <div class="hero-stat-l">AI Travel Tools</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-n">50+</div>
+          <div class="hero-stat-l">Scams Documented</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-n">200+</div>
+          <div class="hero-stat-l">Dishes Explained</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TRUST STRIP ─── -->
+<div class="trust-section">
+  <div class="container">
+    <div class="trust-inner">
+      <div class="trust-item reveal">
+        <div class="trust-icon">🤖</div>
+        <div>
+          <div class="trust-title">Powered by Advanced AI</div>
+          <div class="trust-sub">Real answers, not generic travel tips</div>
+        </div>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item reveal delay-r2">
+        <div class="trust-icon">🛡</div>
+        <div>
+          <div class="trust-title">Scam-Proof Your Trip</div>
+          <div class="trust-sub">50+ documented Sri Lanka tourist scams</div>
+        </div>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item reveal delay-r3">
+        <div class="trust-icon">💰</div>
+        <div>
+          <div class="trust-title">Fair Prices, Always</div>
+          <div class="trust-sub">Know what to pay before you negotiate</div>
+        </div>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item reveal delay-r4">
+        <div class="trust-icon">🌿</div>
+        <div>
+          <div class="trust-title">Deep Local Knowledge</div>
+          <div class="trust-sub">Street-level insights no guidebook has</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOOLS ─── -->
+<section class="tools-section" id="tools">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">AI-Powered Tools</span>
+      <h2 class="section-title">Everything you need,<br>in one place</h2>
+      <p class="section-sub centered">Seven intelligent tools built for foreigners visiting Sri Lanka. Each one solves a real problem tourists face every day.</p>
+    </div>
+    <div class="tools-grid">
+
+      <div class="tool-card reveal delay-r1">
+        <span class="tool-num">01</span>
+        <div class="tool-icon" style="background:#E8F5EE;">🗓</div>
+        <h3 class="tool-card-title">Smart Itinerary Builder</h3>
+        <p class="tool-card-desc">Tell us your days, budget, and travel style. Get a personalized day-by-day Sri Lanka plan with local tips, realistic timings, and honest costs.</p>
+        <a href="#itinerary" class="tool-card-link">Build my plan <span class="tool-card-arrow">→</span></a>
+      </div>
+
+      <div class="tool-card reveal delay-r2">
+        <span class="tool-num">02</span>
+        <div class="tool-icon" style="background:#FEF3E2;">💰</div>
+        <h3 class="tool-card-title">Fair Price Oracle</h3>
+        <p class="tool-card-desc">Know the honest price for everything — tuk-tuks, taxis, food, hotels, activities — before you're quoted. Includes negotiation scripts in Sinhala.</p>
+        <a href="#" class="tool-card-link">Check prices <span class="tool-card-arrow">→</span></a>
+      </div>
+
+      <div class="tool-card featured reveal delay-r3">
+        <span class="tool-num">03</span>
+        <div class="tool-icon" style="background:rgba(255,255,255,0.12);">🛡</div>
+        <h3 class="tool-card-title">Scam Shield</h3>
+        <p class="tool-card-desc">Real-time scam detection. Describe any situation and find out instantly if you're being scammed — and exactly what to say or do.</p>
+        <a href="#" class="tool-card-link">Check a situation <span class="tool-card-arrow">→</span></a>
+      </div>
+
+      <div class="tool-card reveal delay-r4">
+        <span class="tool-num">04</span>
+        <div class="tool-icon" style="background:#EEF0FE;">🙏</div>
+        <h3 class="tool-card-title">Temple Protocol Guide</h3>
+        <p class="tool-card-desc">What to wear, how to behave, what to never do at 30+ sacred sites. Avoid cultural offence — or accidental arrest — with complete site guides.</p>
+        <a href="#" class="tool-card-link">Read the guides <span class="tool-card-arrow">→</span></a>
+      </div>
+
+      <div class="tool-card reveal delay-r5">
+        <span class="tool-num">05</span>
+        <div class="tool-icon" style="background:#FEF3E2;">🍛</div>
+        <h3 class="tool-card-title">Food & Menu Decoder</h3>
+        <p class="tool-card-desc">200+ Sri Lankan dishes explained with ingredients, spice levels, and allergens. Photograph any menu for instant translation and recommendations.</p>
+        <a href="#" class="tool-card-link">Explore food <span class="tool-card-arrow">→</span></a>
+      </div>
+
+      <div class="tool-card reveal delay-r6">
+        <span class="tool-num">06</span>
+        <div class="tool-icon" style="background:#E6F1FB;">🆘</div>
+        <h3 class="tool-card-title">Emergency Navigator</h3>
+        <p class="tool-card-desc">Lost passport, medical emergency, theft — get step-by-step help in 8 languages with embassy contacts, hospital locations, and Sinhala phrases.</p>
+        <a href="#" class="tool-card-link">Get emergency help <span class="tool-card-arrow">→</span></a>
+      </div>
+
+      <div class="tool-card reveal delay-r7" style="grid-column: span 1;">
+        <span class="tool-num">07</span>
+        <div class="tool-icon" style="background:#FBEAF0;">💎</div>
+        <h3 class="tool-card-title">Hidden Gems Finder</h3>
+        <p class="tool-card-desc">Discover the Sri Lanka most tourists never see. Curated off-the-beaten-path places filtered by your travel style — from backpacker to luxury.</p>
+        <a href="#" class="tool-card-link">Find hidden gems <span class="tool-card-arrow">→</span></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how-section" id="how">
+  <div class="how-bg-deco"></div>
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title">Plan smarter in<br>four simple steps</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step reveal delay-r1">
+        <div class="how-step-num">1</div>
+        <div class="how-step-icon">✏️</div>
+        <h4 class="how-step-title">Tell us about your trip</h4>
+        <p class="how-step-desc">Share your dates, budget, travel style, and what excites you most about Sri Lanka.</p>
+      </div>
+      <div class="how-step reveal delay-r2">
+        <div class="how-step-num">2</div>
+        <div class="how-step-icon">🤖</div>
+        <h4 class="how-step-title">AI builds your plan</h4>
+        <p class="how-step-desc">Our AI crafts a personalized itinerary using deep local knowledge — no generic copy-paste guides.</p>
+      </div>
+      <div class="how-step reveal delay-r3">
+        <div class="how-step-num">3</div>
+        <div class="how-step-icon">🛡</div>
+        <h4 class="how-step-title">Travel with confidence</h4>
+        <p class="how-step-desc">Use the Scam Shield, Price Oracle, and Temple Guides while you're on the ground — in real time.</p>
+      </div>
+      <div class="how-step reveal delay-r4">
+        <div class="how-step-num">4</div>
+        <div class="how-step-icon">💚</div>
+        <h4 class="how-step-title">Experience the real Sri Lanka</h4>
+        <p class="how-step-desc">Discover hidden gems, eat like a local, and leave with stories that go beyond any tourist trail.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DESTINATIONS ─── -->
+<section class="destinations-section" id="destinations">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Top Destinations</span>
+      <h2 class="section-title">Where will you go?</h2>
+      <p class="section-sub">From misty highlands to ancient ruins, white beaches to vibrant cities — Sri Lanka has it all. Get AI-powered guides for every destination.</p>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card dest-1 reveal delay-r1">
+        <div class="dest-bg">
+          <!-- Simplified destination illustration: Sigiriya rock -->
+          <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 280 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="280" height="400" fill="#145C44"/>
+            <rect width="280" height="220" y="180" fill="#0D3D28"/>
+            <!-- Sigiriya rock silhouette -->
+            <path d="M80,220 L100,120 L120,90 L140,80 L160,90 L180,120 L200,220 Z" fill="rgba(26,90,60,0.7)"/>
+            <rect x="115" y="80" width="50" height="30" rx="4" fill="rgba(26,90,60,0.5)"/>
+            <!-- Trees -->
+            <circle cx="50" cy="240" r="28" fill="rgba(20,80,52,0.8)"/>
+            <circle cx="230" cy="250" r="22" fill="rgba(20,80,52,0.7)"/>
+            <circle cx="30" cy="270" r="18" fill="rgba(15,65,42,0.6)"/>
+            <!-- Sky gradient -->
+            <rect width="280" height="180" fill="rgba(11,50,35,0.2)"/>
+            <!-- Stars -->
+            <circle cx="50" cy="40" r="1.5" fill="rgba(255,255,255,0.4)"/>
+            <circle cx="200" cy="25" r="1" fill="rgba(255,255,255,0.3)"/>
+            <circle cx="140" cy="55" r="1.2" fill="rgba(255,255,255,0.35)"/>
+            <circle cx="240" cy="70" r="1" fill="rgba(255,255,255,0.25)"/>
+          </svg>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <div class="dest-name">Sigiriya &amp; Dambulla</div>
+          <span class="dest-tag">Ancient Wonders</span>
+        </div>
+      </div>
+
+      <div class="dest-card dest-2 reveal delay-r2">
+        <div class="dest-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="280" height="200" fill="#1A3D52"/>
+            <rect width="280" height="90" y="110" fill="#0D2535"/>
+            <!-- Ocean waves -->
+            <path d="M0,130 Q70,110 140,130 Q210,150 280,130 L280,200 L0,200 Z" fill="rgba(15,55,80,0.7)"/>
+            <path d="M0,145 Q70,125 140,145 Q210,165 280,145 L280,200 L0,200 Z" fill="rgba(10,40,60,0.5)"/>
+            <!-- Palm trees -->
+            <line x1="60" y1="115" x2="55" y2="50" stroke="rgba(20,80,52,0.9)" stroke-width="3"/>
+            <path d="M55,50 Q30,35 20,45 Q35,42 40,55 Q30,38 55,50 Q55,50 60,35 Q65,42 75,40 Q67,48 55,50 Q70,38 80,50 Q70,52 55,50" fill="rgba(26,120,70,0.7)"/>
+            <line x1="200" y1="120" x2="205" y2="55" stroke="rgba(20,80,52,0.8)" stroke-width="3"/>
+            <path d="M205,55 Q180,40 170,50 Q185,47 188,60 Q180,43 205,55 Q205,55 208,40 Q214,47 224,45 Q216,53 205,55 Q220,43 230,55 Q220,57 205,55" fill="rgba(26,120,70,0.6)"/>
+          </svg>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <div class="dest-name">Mirissa &amp; Weligama</div>
+          <span class="dest-tag">Beach &amp; Surf</span>
+        </div>
+      </div>
+
+      <div class="dest-card dest-3 reveal delay-r3">
+        <div class="dest-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="280" height="200" fill="#3D2810"/>
+            <!-- Tea plantation hills -->
+            <path d="M0,140 Q50,100 100,120 Q150,140 200,100 Q240,70 280,90 L280,200 L0,200 Z" fill="rgba(30,80,40,0.8)"/>
+            <path d="M0,160 Q60,130 120,150 Q180,170 240,140 Q260,130 280,140 L280,200 L0,200 Z" fill="rgba(20,65,30,0.9)"/>
+            <!-- Tea bushes rows -->
+            <path d="M10,170 Q40,162 70,170 Q100,178 130,170 Q160,162 190,170 Q220,178 260,170" stroke="rgba(26,120,60,0.5)" stroke-width="3" fill="none"/>
+            <path d="M10,185 Q40,177 70,185 Q100,193 130,185 Q160,177 190,185 Q220,193 260,185" stroke="rgba(26,120,60,0.4)" stroke-width="2.5" fill="none"/>
+            <!-- Mist/fog -->
+            <rect width="280" height="80" fill="rgba(180,150,100,0.08)"/>
+            <!-- Hills in distance -->
+            <path d="M0,80 Q70,40 140,60 Q210,80 280,50 L280,0 L0,0 Z" fill="rgba(60,40,20,0.3)"/>
+          </svg>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <div class="dest-name">Ella &amp; Nuwara Eliya</div>
+          <span class="dest-tag">Tea Country</span>
+        </div>
+      </div>
+
+      <div class="dest-card dest-4 reveal delay-r3">
+        <div class="dest-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="280" height="200" fill="#1A3D52"/>
+            <!-- Kandy lake -->
+            <ellipse cx="140" cy="140" rx="120" ry="50" fill="rgba(20,60,90,0.8)"/>
+            <!-- Temple silhouette -->
+            <rect x="90" y="80" width="100" height="60" rx="2" fill="rgba(10,40,30,0.8)"/>
+            <path d="M110,80 L115,60 L120,80 Z" fill="rgba(200,144,42,0.5)"/>
+            <path d="M135,80 L140,50 L145,80 Z" fill="rgba(200,144,42,0.6)"/>
+            <path d="M160,80 L165,62 L170,80 Z" fill="rgba(200,144,42,0.5)"/>
+            <!-- Rooftop detail -->
+            <rect x="88" y="78" width="104" height="5" rx="1" fill="rgba(200,144,42,0.4)"/>
+          </svg>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <div class="dest-name">Kandy</div>
+          <span class="dest-tag">Cultural Capital</span>
+        </div>
+      </div>
+
+      <div class="dest-card dest-5 reveal delay-r4">
+        <div class="dest-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="280" height="200" fill="#3D5C1A"/>
+            <!-- Yala / wildlife silhouette -->
+            <path d="M0,160 Q80,130 160,150 Q220,165 280,145 L280,200 L0,200 Z" fill="rgba(20,50,10,0.8)"/>
+            <!-- Elephant silhouette -->
+            <path d="M120,130 Q115,110 120,105 Q130,98 140,100 Q155,102 160,112 Q165,120 160,130 L155,145 L140,148 L125,145 Z" fill="rgba(15,45,10,0.85)"/>
+            <path d="M130,145 L128,160 L132,160 L133,145 Z" fill="rgba(15,45,10,0.85)"/>
+            <path d="M143,145 L141,160 L145,160 L146,145 Z" fill="rgba(15,45,10,0.85)"/>
+            <!-- Trees -->
+            <circle cx="60" cy="140" r="24" fill="rgba(20,70,15,0.8)"/>
+            <circle cx="230" cy="145" r="20" fill="rgba(20,70,15,0.7)"/>
+            <circle cx="40" cy="158" r="16" fill="rgba(15,55,10,0.7)"/>
+          </svg>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <div class="dest-name">Yala &amp; Udawalawe</div>
+          <span class="dest-tag">Wildlife &amp; Safari</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ITINERARY PREVIEW ─── -->
+<section class="itinerary-section" id="itinerary">
+  <div class="container">
+    <div class="itinerary-grid">
+      <div class="itinerary-preview reveal">
+        <div class="itin-header">
+          <div>
+            <div class="itin-header-title">Your 7-Day Sri Lanka Journey</div>
+            <div class="itin-header-sub">Cultural & Adventure · $60/day · Solo traveler</div>
+          </div>
+          <div class="itin-dots">
+            <div class="itin-dot" style="background:rgba(255,255,255,0.3)"></div>
+            <div class="itin-dot" style="background:rgba(255,255,255,0.3)"></div>
+            <div class="itin-dot" style="background:var(--gold)"></div>
+          </div>
+        </div>
+        <div class="itin-days">
+          <div class="itin-day-tab active">Day 1</div>
+          <div class="itin-day-tab">Day 2</div>
+          <div class="itin-day-tab">Day 3</div>
+          <div class="itin-day-tab">Day 4 →</div>
+        </div>
+        <div class="itin-body">
+          <div class="itin-day-title">Colombo — Arrival &amp; First Impressions</div>
+          <div class="itin-items">
+            <div class="itin-item">
+              <span class="itin-time">8:00 AM</span>
+              <div>
+                <div class="itin-act-title">Arrive at BIA, clear customs</div>
+                <div class="itin-act-desc">PickMe taxi to Fort area. Expect LKR 3,500 (not LKR 8,000 — that's the scam price).</div>
+              </div>
+            </div>
+            <div class="itin-item">
+              <span class="itin-time">10:30 AM</span>
+              <div>
+                <div class="itin-act-title">Pettah Market walk</div>
+                <div class="itin-act-desc">Chaos and colour. Try a fresh king coconut (LKR 80). Watch your pockets.</div>
+              </div>
+            </div>
+            <div class="itin-item">
+              <span class="itin-time">1:00 PM</span>
+              <div>
+                <div class="itin-act-title">Lunch at Ministry of Crab</div>
+                <div class="itin-act-desc">Book ahead. Best seafood in the city. Try the mudu crab.</div>
+              </div>
+            </div>
+            <div class="itin-item">
+              <span class="itin-time">3:30 PM</span>
+              <div>
+                <div class="itin-act-title">Gangaramaya Temple visit</div>
+                <div class="itin-act-desc">Cover shoulders and knees. Remove shoes. Entrance LKR 600 for foreigners.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="itin-footer">
+          <span class="itin-footer-note">AI-generated · Updated daily</span>
+          <span class="itin-footer-tag">Est. cost today: $48</span>
+        </div>
+      </div>
+      <div class="itinerary-text reveal delay-r2">
+        <span class="section-label">Itinerary Builder</span>
+        <h3>A trip plan that actually works in the real Sri Lanka</h3>
+        <p>Generic itineraries don't mention that the temple opens at 5:30 AM, that the train to Ella books out 3 weeks ahead, or that that "friendly local" steering you away from the temple has a gem shop waiting at the end.</p>
+        <p>LankaGenie knows all of this. Every plan we build is layered with the honest, street-level intelligence that guidebooks leave out.</p>
+        <div class="itinerary-features">
+          <div class="itin-feature">
+            <div class="itin-feature-icon">⏱</div>
+            <span class="itin-feature-text">Realistic travel times between every location</span>
+          </div>
+          <div class="itin-feature">
+            <div class="itin-feature-icon">💸</div>
+            <span class="itin-feature-text">Honest daily cost estimates in USD</span>
+          </div>
+          <div class="itin-feature">
+            <div class="itin-feature-icon">🛡</div>
+            <span class="itin-feature-text">Scam warnings embedded in your itinerary</span>
+          </div>
+          <div class="itin-feature">
+            <div class="itin-feature-icon">📅</div>
+            <span class="itin-feature-text">Poya day closures & seasonal alerts</span>
+          </div>
+          <div class="itin-feature">
+            <div class="itin-feature-icon">💎</div>
+            <span class="itin-feature-text">One local secret per day, guaranteed</span>
+          </div>
+        </div>
+        <a href="#" class="btn-primary" style="display:inline-flex;">
+          Build my itinerary now →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="qa-section" id="faq">
+  <div class="container">
+    <div class="qa-grid">
+      <div class="qa-left">
+        <span class="section-label reveal">Traveler Questions</span>
+        <h2 class="section-title reveal delay-r1">Questions every<br>visitor asks us</h2>
+        <p class="section-sub reveal delay-r2" style="margin-bottom:32px">Real answers to the things tourists worry about most — before and during their trip.</p>
+        <div class="qa-items reveal delay-r3">
+          <div class="qa-item open">
+            <div class="qa-q">
+              <span class="qa-q-text">Is Sri Lanka safe for solo travelers?</span>
+              <span class="qa-toggle">+</span>
+            </div>
+            <div class="qa-a">Sri Lanka is generally very safe for solo travelers, including women. The main risks are tourist-targeted scams (not violence), traffic accidents, and occasional petty theft at crowded sites. Our Scam Shield covers the 50 most common tricks in detail. Use PickMe or Uber instead of unmarked taxis, and you'll have a smooth trip.</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <span class="qa-q-text">How much should I budget per day in Sri Lanka?</span>
+              <span class="qa-toggle">+</span>
+            </div>
+            <div class="qa-a">Budget travelers: $25–$40/day (guesthouses, local food, buses). Mid-range: $60–$120/day (boutique hotels, some tours, private transport). Luxury: $200–$500+/day. The biggest overspend trap is transport — always use PickMe over street tuk-tuks for airport and city routes. Our Price Oracle has exact breakdowns for every expense.</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <span class="qa-q-text">What are Poya days and how do they affect my trip?</span>
+              <span class="qa-toggle">+</span>
+            </div>
+            <div class="qa-a">Poya days are full moon days observed as national holidays. Alcohol is banned across the country — shops, restaurants, and hotels cannot sell it. Some cultural sites have restricted access. They occur monthly. Our itinerary builder automatically flags Poya days in your travel dates so you can plan around them.</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <span class="qa-q-text">Do I need a visa to visit Sri Lanka?</span>
+              <span class="qa-toggle">+</span>
+            </div>
+            <div class="qa-a">Most nationalities require an Electronic Travel Authorization (ETA) which you can apply for online at eta.gov.lk. Cost is typically $35–$50 USD. The process takes minutes. Beware of third-party "visa assistance" websites that charge 3–5x more — use only the official government portal. Some nationalities receive free visas — check with your embassy.</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-q">
+              <span class="qa-q-text">What's the best way to get around Sri Lanka?</span>
+              <span class="qa-toggle">+</span>
+            </div>
+            <div class="qa-a">The famous Kandy-to-Ella train is the most scenic train journey in Asia — book seats weeks ahead at 12go.asia or the railway station directly. For cities, use PickMe (Sri Lanka's Uber). For longer routes, hire a private driver with car (~$60–$90/day). Buses are very cheap but slow. Tuk-tuks are for short hops — always negotiate before getting in.</div>
+          </div>
+        </div>
+      </div>
+      <div class="qa-right reveal delay-r3">
+        <div class="qa-promo">
+          <div class="qa-promo-label">Free Sri Lanka Insider Pack</div>
+          <h3>Get the complete pre-travel guide delivered to your inbox</h3>
+          <p>The 47 things every traveler should know before landing in Sri Lanka — compiled from thousands of visitor experiences and local knowledge. Includes our full Scam Shield database as a downloadable PDF.</p>
+          <div class="qa-form">
+            <input type="email" class="qa-input" placeholder="Your email address">
+            <input type="text" class="qa-input" placeholder="When are you visiting? (e.g. March 2026)">
+            <button class="btn-gold">Send me the free guide →</button>
+            <span class="qa-form-note">No spam. Unsubscribe any time. Free forever.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-pattern"></div>
+  <div class="container">
+    <div class="cta-inner reveal">
+      <span class="section-label" style="background:rgba(200,144,42,0.2);color:var(--gold-light);">Start Planning</span>
+      <h2>Your <em>perfect</em> Sri Lanka trip<br>starts here</h2>
+      <p>Join thousands of travelers who explored Sri Lanka smarter, safer, and more authentically — with a local AI companion by their side.</p>
+      <div class="cta-form-row">
+        <input type="email" class="cta-input" placeholder="Enter your email to get started free">
+        <button class="btn-gold">Get Started →</button>
+      </div>
+      <p class="cta-note">Free to use · No account required for most tools</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-mark">LG</div>
+          <span class="footer-logo-text">LankaGenie</span>
+        </div>
+        <p class="footer-desc">Your AI travel companion for Sri Lanka. Built with deep local knowledge and advanced AI to help every foreigner explore the island with confidence.</p>
+        <div class="footer-social">
+          <a href="#" class="footer-social-link" aria-label="Instagram">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="Facebook">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="Twitter">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">AI Tools</div>
+        <div class="footer-links">
+          <a href="#">Itinerary Builder</a>
+          <a href="#">Fair Price Oracle</a>
+          <a href="#">Scam Shield</a>
+          <a href="#">Temple Protocol</a>
+          <a href="#">Food Decoder</a>
+          <a href="#">Emergency Help</a>
+          <a href="#">Hidden Gems</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Destinations</div>
+        <div class="footer-links">
+          <a href="#">Colombo</a>
+          <a href="#">Kandy</a>
+          <a href="#">Ella &amp; Nuwara Eliya</a>
+          <a href="#">Galle &amp; South Coast</a>
+          <a href="#">Sigiriya &amp; Dambulla</a>
+          <a href="#">Yala &amp; Wilpattu</a>
+          <a href="#">Trincomalee</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <div class="footer-links">
+          <a href="#">Sri Lanka ETA (Visa)</a>
+          <a href="#">Best Time to Visit</a>
+          <a href="#">Poya Day Calendar</a>
+          <a href="#">Budget Guide</a>
+          <a href="#">Download Free PDF</a>
+          <a href="#">Travel Insurance</a>
+          <a href="#">Contact Us</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-bottom-text">© 2026 LankaGenie. Built with love for Sri Lanka's visitors.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Advertise</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── SCRIPTS ─── -->
+<script>
+// Nav scroll effect
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// Mobile menu
+const mobileBtn = document.getElementById('mobileMenuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+mobileBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+// Close on link click
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => observer.observe(el));
+
+// FAQ accordion
+document.querySelectorAll('.qa-item').forEach(item => {
+  item.querySelector('.qa-q').addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.qa-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// Itinerary day tabs (demo)
+document.querySelectorAll('.itin-day-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.itin-day-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
